@@ -27,33 +27,37 @@ app.get("/", async (req, res) => {
 })
 
 app.post("/", async (req, res) => {
-    let { productID, Quantity, operation } = req.body
-    try {
-        const prod = await Product.findOne({ productID })
-        if (prod) {
-            if (operation == "add") {
-                await Product.updateOne({ productID }, { Quantity: prod.Quantity + Quantity })
-                res.json({
-                    message:"Data updated Successfully",
-                    prod
-                })
-            }
-            else if (operation == "subtract") {
-                await Product.updateOne({ productID }, { Quantity: prod.Quantity - Quantity })
-                res.json({
-                    message:"Data updated Successfully",
-                    prod
-                })
-            }
-        }
-        else {
-            let data = await Product.create(req.body)
-            res.json({
-                message: "Data Uploaded Successfully",
-                data
 
-            })
-        }
+    try {
+        req.body.map(async (data) => {
+            let {productID, Quantity, operation} = data
+            const prod = await Product.findOne({ productID })
+            if (prod) {
+                if (operation == "add") {
+                    await Product.updateOne({ productID }, { Quantity: prod.Quantity + Quantity })
+                    res.json({
+                        message: "Data updated Successfully",
+                        prod
+                    })
+                }
+                else if (operation == "subtract") {
+                    await Product.updateOne({ productID }, { Quantity: prod.Quantity - Quantity })
+                    res.json({
+                        message: "Data updated Successfully",
+                        prod
+                    })
+                }
+            }
+            else {
+                let data = await Product.create(req.body)
+                res.json({
+                    message: "Data Uploaded Successfully",
+                    data
+
+                })
+            }
+        })
+
 
     } catch (error) {
         res.status(400).json({

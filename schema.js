@@ -1,7 +1,7 @@
 let mongoose=require("mongoose")
 
 let productSchema=new mongoose.Schema({
-    productID:Number,
+    productID:{type:Number,unique:true},
     Quantity:Number,
     operation:String
 })
